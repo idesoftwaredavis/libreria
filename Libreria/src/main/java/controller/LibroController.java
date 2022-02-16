@@ -2,7 +2,9 @@ package controller;
 
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.google.gson.Gson;
@@ -53,5 +55,50 @@ public class LibroController implements lLibroController {
 		
 		return gson.toJson(libros);
 	}
+
+	@Override
+	public String alquilar(int id, String username) {
+		Timestamp fecha = new Timestamp(new Date().getTime());
+		DBConnection db  = new DBConnection();
+		
+		String sql = "Insert into alquiler values ('"+id+"','"+username+"','"+fecha+"')";
+		
+		try {
+			Statement st = db.getConnection().createStatement();
+			st.executeUpdate(sql);
+			
+			String modificar = modificar(id);
+			
+			if(modificar == "true") {
+				return "true";
+			}
+		}catch(Exception ex) {
+			System.out.println(ex.toString());
+		}finally {
+			db.desconectar();
+		}
+		
+		return "false";
+	}
+
+	@Override
+	public String modificar(int id) {
+		DBConnection db  = new DBConnection();
+		String sql = "Update libros set copias = (copias - 1) where id = "+id;
+		try {
+			Statement st = db.getConnection().createStatement();
+			st.executeUpdate(sql);
+			
+			return "true";
+		}catch(Exception ex) {
+			System.out.println(ex.toString());
+		}finally {
+			db.desconectar();
+		}
+		
+		return "false";
+	}
+	
+	
 
 }

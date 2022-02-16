@@ -9,19 +9,19 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import controller.UsuarioController;
+import controller.LibroController;
 
 /**
- * Servlet implementation class ServletUsuarioRegister
+ * Servlet implementation class ServletLibroAlquilar
  */
-@WebServlet("/ServletUsuarioRegister")
-public class ServletUsuarioRegister extends HttpServlet {
+@WebServlet("/ServletLibroAlquilar")
+public class ServletLibroAlquilar extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public ServletUsuarioRegister() {
+    public ServletLibroAlquilar() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -30,28 +30,20 @@ public class ServletUsuarioRegister extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// objeto usuario controler para activar el metodo registrar del controlador
-		UsuarioController  usuario = new UsuarioController();
-		
-		// Extraer campos del cliente
+		LibroController libro = new LibroController();
+		int id = Integer.parseInt( request.getParameter("id"));
 		String username = request.getParameter("username");
-		String contrasena = request.getParameter("contrasena");
-		String nombre = request.getParameter("nombre");
-		String apellidos = request.getParameter("apellidos");
-		String email = request.getParameter("email");
-		double saldo = Double.parseDouble(request.getParameter("saldo"));
-		Boolean premium = Boolean.parseBoolean(request.getParameter("premium"));
 		
-		// invoco metodo register y le paso por parametros los datos del cliente
-		String usuarioStr = usuario.register(username, contrasena, nombre, apellidos, email, saldo, premium);
+		String libroStr = libro.alquilar(id,username);
 		
-		// Objeto PrintWriter para poder mostrar la informacion a la vida.
+		response.setContentType("text/html;charset=UTF-8");
+		
 		PrintWriter out = response.getWriter();
-		// imprimo lo que quiero visualizar
-		out.println(usuarioStr);
-		// Limpio buffer
+		
+		out.println(libroStr);
 		out.flush();
 		out.close();
+		
 	}
 
 	/**

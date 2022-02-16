@@ -136,4 +136,50 @@ function ordenarLibros(){
 		
 		}
 }
-	
+
+function alquilarLibro(id,precio){
+	$.ajax({
+			type:"GET",
+			dataType:"html",
+			url:"./ServletLibroAlquilar",
+			data: $.param({
+				id:id,
+				username:username
+			}),
+			success: function(r){
+				// parseo el resultado del controller
+				let parse = JSON.parse(r);
+				
+				if ( parse != false ){
+					
+					restarDinero(precio).then(function(){
+						location.reload();
+					})
+				}else{
+					console.log("Error en la reserva de la pelicula");
+				}
+			}
+		});
+}
+
+
+async function restarDinero(precio){
+	await $.ajax({
+		type:"GET",
+		dataType:"html",
+		url:"./ServletUsuarioRestarDinero",
+		data: $.param({
+			username:username,
+			saldo: parseFloat(user.saldo - precio)
+		}),
+		success:function(r){
+			let parseResult = JSON.parse(r);
+			
+			if (parseResult != false){
+				console.log("saldo actualizado");
+			}else{
+				console.log("Error en el proceso de pago");
+			}
+		}
+	})
+}

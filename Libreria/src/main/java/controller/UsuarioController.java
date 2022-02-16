@@ -1,6 +1,7 @@
 package controller;
 
 import java.sql.ResultSet;
+
 import java.sql.Statement;
 
 import connection.DBConnection;
@@ -65,6 +66,61 @@ public class UsuarioController implements IUsuarioController {
 		}finally {
 			con.desconectar();
 		}
+	}
+
+	@Override
+	public String pedir(String username) {
+		//Objeto gson para devolver los datos en formato JSON
+		Gson gson = new Gson();
+		
+		DBConnection db = new DBConnection();
+		
+		String sql = "Select * from usuarios where username = '" + username +"'";
+		
+		try {
+			Statement st = db.getConnection().createStatement();
+			ResultSet rs = st.executeQuery(sql);
+			
+			while(rs.next()) {
+				String contrasena = rs.getString("contrasena");
+				String nombre = rs.getString("nombre");
+				String apellidos = rs.getString("apellidos");
+				String email = rs.getString("email");
+				double saldo = rs.getDouble("saldo");
+				boolean premium = rs.getBoolean("premium");
+				
+				Usuario user = new Usuario(username,contrasena,nombre,apellidos,email,saldo,premium);
+				System.out.println(user);
+				return gson.toJson(user);
+				
+			}
+		}catch(Exception ex) {
+			System.out.println(ex.getMessage());
+		}finally {
+			db.desconectar();
+		}
+		return "false";
+	}
+
+	@Override
+	public String restarDinero(String username, double nuevoSaldo) {
+		DBConnection db = new DBConnection();
+		
+		String sql = "update usuarios set saldo = "+ nuevoSaldo+" where username ='"+username+"'";
+		
+		
+		try {
+			Statement st = db.getConnection().createStatement();
+			st.executeUpdate(sql);
+				
+			return "true";	
+			
+		}catch(Exception ex) {
+			System.out.println(ex.getMessage());
+		}finally {
+			db.desconectar();
+		}
+		return "false";
 	}
 	
 }

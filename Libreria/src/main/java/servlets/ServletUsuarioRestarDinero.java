@@ -12,16 +12,17 @@ import javax.servlet.http.HttpServletResponse;
 import controller.UsuarioController;
 
 /**
- * Servlet implementation class ServletUsuarioLogin
+ * Servlet implementation class ServletUsuarioRestarDinero
  */
-@WebServlet("/ServletUsuarioLogin")
-public class ServletUsuarioLogin extends HttpServlet {
+@WebServlet("/ServletUsuarioRestarDinero")
+public class ServletUsuarioRestarDinero extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-
+       
     /**
-     * Default constructor. 
+     * @see HttpServlet#HttpServlet()
      */
-    public ServletUsuarioLogin() {
+    public ServletUsuarioRestarDinero() {
+        super();
         // TODO Auto-generated constructor stub
     }
 
@@ -29,24 +30,20 @@ public class ServletUsuarioLogin extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		UsuarioController usuario = new UsuarioController();
+		UsuarioController u = new UsuarioController();
 		
 		String username = request.getParameter("username");
-		String contrasena = request.getParameter("contrasena");
+		double saldo = Double.parseDouble(request.getParameter("saldo"));
 		
-		String result = usuario.login(username, contrasena);
+		String usuarioStr = u.restarDinero(username, saldo);
 		
-		System.out.println(result);
-		// mando datos a la vista 
 		response.setContentType("text/html;charset=UTF-8");
+		
 		PrintWriter out = response.getWriter();
-		// indico lo que se quiere enviar
-		out.println(result);
-		// limpiar buffer
+		
+		out.println(usuarioStr);
 		out.flush();
 		out.close();
-		
 	}
 
 	/**
